@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Panel de Viabilidad Económica - Extensión Universitaria</title>
+    <!-- Librería para exportar a PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .inputs-panel {
+            flex: 0.35;
+            min-width: 320px;
+            padding: 24px;
+            background: #fafafa;
+            border-right: 1px solid #e0e0e0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .results-panel {
+            flex: 0.65;
+            min-width: 600px;
+            padding: 24px;
+            background: white;
+            overflow-x: auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: #5160ab;
+            color: white;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* BOTÓN DE AYUDA "?" - ESQUINA SUPERIOR IZQUIERDA */
+        .btn-help {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn-help:hover {
+            background: rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
+
+        /* Botón de exportar PDF */
+        .btn-pdf {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .btn-pdf:hover {
+            background-color: #c82333;
+            transform: scale(1.02);
+        }
+
+        .btn-pdf:active {
+            transform: scale(0.98);
+        }
+
+        /* Contenedor para exportar a PDF */
+        #pdf-content {
+            background: white;
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 28px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #5160ab;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group label {
+            width: 200px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-group input, .input-group select {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #5160ab;
+            box-shadow: 0 0 0 3px rgba(81,96,171,0.1);
+        }
+
+        .costos-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .costo-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .costo-item:last-child {
+            border-bottom: none;
+        }
+
+        .costo-check {
+            width: 30px;
+        }
+
+        .costo-nombre {
+            width: 140px;
+            font-weight: 500;
+        }
+
+        .costo-valor {
+            width: 120px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .costo-tipo {
+            width: 100px;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .costo-info {
+            font-size: 11px;
+            color: #666;
+            margin-left: 5px;
+        }
+
+        .tabla-escenarios, .tabla-mensual {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 0.85rem;
+        }
+
+        .tabla-escenarios th, .tabla-mensual th {
+            background-color: #5160ab;
+            color: white;
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .tabla-escenarios td, .tabla-mensual td {
+            padding: 8px 6px;
+            text-align: right;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tabla-escenarios td:first-child, .tabla-mensual td:first-child {
+            text-align: left;
+            font-weight: 600;
+            background-color: #f8f9fa;
+            position: sticky;
+            left: 0;
+        }
+
+        .tabla-escenarios tr:nth-child(even), .tabla-mensual tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .positivo {
+            color: #28a745;
+            font-weight: 700;
+        }
+
+        .negativo {
+            color: #dc3545;
+            font-weight: 700;
+        }
+
+        .total-curso {
+            background-color: #e8f5e9;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-curso .label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #155724;
+        }
+
+        .total-curso .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .leyenda {
+            margin-top: 20px;
+            padding: 12px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: #004085;
+        }
+
+        .subseccion {
+            margin-top: 30px;
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+        }
+
+        .header-pdf {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #5160ab;
+        }
+
+        .header-pdf h2 {
+            color: #5160ab;
+            margin-bottom: 5px;
+        }
+
+        .header-pdf p {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .developer-credit {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 11px;
+            color: #888;
+            background: rgba(255,255,255,0.95);
+            padding: 6px 12px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1001;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: default;
+            backdrop-filter: blur(5px);
+        }
+
+        .developer-credit:hover {
+            background: #5160ab;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            .inputs-panel {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                max-height: none;
+            }
+            .results-panel {
+                overflow-x: auto;
+            }
+            .tabla-escenarios, .tabla-mensual {
+                font-size: 0.7rem;
+            }
+            .developer-credit {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            .btn-help {
+                width: 32px;
+                height: 32px;
+                font-size: 18px;
+                top: 15px;
+                left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER CON BOTÓN "?" EN ESQUINA SUPERIOR IZQUIERDA -->
+    <div class="header">
+        <!-- ⚠️ CAMBIAR ESTA URL POR LA DE TU PDF DE INSTRUCTIVO ⚠️ -->
+        <a href="#" id="btnHelp" class="btn-help" target="_blank">?</a>
+        <h1>📊 Asistente de Viabilidad Económica</h1>
+        <p>Secretaría de Extensión Universitaria - Cursos autofinanciados</p>
+    </div>
+
+    <div class="dashboard">
+        <!-- PANEL IZQUIERDO: INPUTS -->
+        <div class="inputs-panel">
+            <div class="section">
+                <div class="section-title">📌 Parámetros del curso</div>
+                <div class="input-group">
+                    <label>👨‍🎓 Estudiantes iniciales:</label>
+                    <input type="number" id="estudiantesIniciales" value="20" step="1" min="1">
+                </div>
+                <div class="input-group">
+                    <label>📉 Tasa de deserción mensual:</label>
+                    <input type="number" id="tasaDesercion" value="5" step="1" min="0" max="100">
+                    <span class="costo-info">(% por mes)</span>
+                </div>
+                <div class="input-group">
+                    <label>💰 Valor de la cuota (sin inflación):</label>
+                    <input type="number" id="cuotaBase" value="5000" step="100" min="1">
+                </div>
+                <div class="input-group">
+                    <label>📆 Cantidad de cuotas (meses):</label>
+                    <input type="number" id="numCuotas" value="4" step="1" min="1">
+                </div>
+                <div class="input-group">
+                    <label>👨‍🏫 Cantidad de docentes:</label>
+                    <input type="number" id="cantidadDocentes" value="1" step="1" min="1">
+                </div>
+                <div class="input-group">
+                    <label>🏫 Tipo de curso:</label>
+                    <select id="tipoCurso">
+                        <option value="presencial">Presencial</option>
+                        <option value="virtual">Virtual</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>👩‍🏫 % Honorarios docentes (total):</label>
+                    <input type="number" id="porcDocente" value="30" step="5" min="0" max="100">
+                </div>
+                <div class="input-group" style="background:#f0f7ff; padding:10px; border-radius:8px; margin-top:10px;">
+                    <label>📈 Margen de Inflación:</label>
+                    <input type="checkbox" id="checkInflacionCuota" style="width:20px;">
+                    <span style="font-weight:500;">Aplicar % a la cuota</span>
+                    <input type="number" id="porcInflacionCuota" value="10" step="1" min="0" class="costo-valor" disabled>
+                    <span class="costo-info">(% extra sobre el valor de cada cuota)</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">⚙️ Costos Operacionales</div>
+                <div class="costos-card">
+                    <div class="costo-item">
+                        <input type="checkbox" id="checkSeguro" class="costo-check">
+                        <span class="costo-nombre">Seguro (por estudiante)</span>
+                        <input type="number" id="valorSeguro" value="500" step="100" class="costo-valor" disabled>
+                        <span class="costo-info">(fijo × estudiantes del mes)</span>
+                    </div>
+
+                    <div class="costo-item" style="background:#fff3e0;">
+                        <input type="checkbox" id="checkPlataformaPago" class="costo-check">
+                        <span class="costo-nombre">⭐ Plataforma de pago</span>
+                        <input type="number" id="porcPlataformaPago" value="2.5" step="0.5" class="costo-valor" disabled>
+                        <span class="costo-info">(% recaudación del mes)</span>
+                    </div>
+
+                    <div class="costo-item">
+                        <input type="checkbox" id="checkInsumos" class="costo-check">
+                        <span class="costo-nombre">Insumos</span>
+                        <input type="number" id="valorInsumos" value="10000" step="1000" class="costo-valor" disabled>
+                        <select id="tipoInsumos" class="costo-tipo" disabled>
+                            <option value="fijo">Monto fijo mensual</option>
+                            <option value="porcentaje">% recaudación mes</option>
+                        </select>
+                    </div>
+
+                    <div class="costo-item">
+                        <input type="checkbox" id="checkPublicidad" class="costo-check">
+                        <span class="costo-nombre">Publicidad</span>
+                        <input type="number" id="valorPublicidad" value="5000" step="1000" class="costo-valor" disabled>
+                        <select id="tipoPublicidad" class="costo-tipo" disabled>
+                            <option value="fijo">Monto fijo mensual</option>
+                            <option value="porcentaje">% recaudación mes</option>
+                        </select>
+                    </div>
+
+                    <div id="licenciasContainer" class="costo-item" style="display:none;">
+                        <input type="checkbox" id="checkLicencias" class="costo-check">
+                        <span class="costo-nombre">Licencias Virtuales</span>
+                        <input type="number" id="valorLicencias" value="15000" step="1000" class="costo-valor" disabled>
+                        <span class="costo-info">(fijo mensual)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL DERECHO: RESULTADOS -->
+        <div class="results-panel">
+            <!-- Botón para exportar a PDF -->
+            <div style="text-align: right;">
+                <button class="btn-pdf" id="btnExportarPDF">
+                    📄 Exportar a PDF
+                </button>
+            </div>
+
+            <!-- Contenido que se exportará a PDF -->
+            <div id="pdf-content">
+                <div class="header-pdf">
+                    <h2>Informe de Viabilidad Económica</h2>
+                    <p>Secretaría de Extensión Universitaria - Curso autofinanciado</p>
+                    <p>Fecha de generación: <span id="fechaActual"></span></p>
+                </div>
+
+                <div class="section-title">📈 Escenarios por cantidad de estudiantes (sin deserción)</div>
+                <table class="tabla-escenarios" id="tablaEscenarios">
+                    <thead id="escenariosHeader"></thead>
+                    <tbody id="escenariosBody"></tbody>
+                </table>
+
+                <div class="subseccion">
+                    <div class="section-title">📅 Proyección mensual con deserción del <span id="tasaDesercionDisplayPDF">5</span>%</div>
+                    <table class="tabla-mensual" id="tablaMensual">
+                        <thead id="mensualHeader"></thead>
+                        <tbody id="mensualBody"></tbody>
+                    </table>
+
+                    <div class="total-curso" id="totalCursoBoxPDF">
+                        <div class="label">💰 TOTAL CURSO COMPLETO (considerando deserción)</div>
+                        <div class="value" id="totalCursoValorPDF">-</div>
+                        <div style="font-size:0.9rem; margin-top:8px;" id="totalCursoDetallePDF">Margen Facultad acumulado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Crédito "desarrollado por" -->
+<div class="developer-credit">
+    ✨‍Desarrollado por Téc. Nadia Schimpf | Sec. de Extensión Universitaria y Cultura UTN Paraná | 2026
+</div>
+
+<script>
+    // =====================================================
+    // CONFIGURACIÓN DEL BOTÓN "?" - CAMBIAR ACÁ LA URL
+    // =====================================================
+    // ⚠️ ⚠️ ⚠️ IMPORTANTE: CAMBIAR ESTA URL POR LA DE TU PDF ⚠️ ⚠️ ⚠️
+    const INSTRUCTIVO_PDF_URL = "https://drive.google.com/file/d/1FdmW07ay28Rid_qyg6RAk9ag3OPLAUAS/view?usp=sharing";
+    
+    const btnHelp = document.getElementById('btnHelp');
+    btnHelp.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (INSTRUCTIVO_PDF_URL === "https://drive.google.com/tu-link-del-pdf-aqui") {
+            alert("⚠️ El enlace al instructivo PDF aún no ha sido configurado.\n\nPor favor, reemplaza la variable INSTRUCTIVO_PDF_URL en el código con la URL de tu archivo PDF (puede ser de Google Drive o cualquier otra web).");
+        } else {
+            window.open(INSTRUCTIVO_PDF_URL, '_blank');
+        }
+    });
+
+    // =====================================================
+    // CONFIGURACIÓN DE ESCENARIOS
+    // =====================================================
+    const ESCENARIOS = [10, 15, 20, 25, 30];
+
+    // =====================================================
+    // FUNCIONES DE CÁLCULO
+    // =====================================================
+
+    function obtenerCuotaConInflacion() {
+        let cuotaBase = parseFloat(document.getElementById('cuotaBase').value) || 0;
+        let inflacionActiva = document.getElementById('checkInflacionCuota').checked;
+        let porcInflacion = parseFloat(document.getElementById('porcInflacionCuota').value) || 0;
+        if (inflacionActiva && porcInflacion > 0) {
+            return cuotaBase * (1 + porcInflacion / 100);
+        }
+        return cuotaBase;
+    }
+
+    function obtenerConfiguracionCostos(tipoCurso) {
+        return {
+            seguroActivo: document.getElementById('checkSeguro').checked,
+            seguroPorEstudiante: parseFloat(document.getElementById('valorSeguro').value) || 0,
+            plataformaActivo: document.getElementById('checkPlataformaPago').checked,
+            plataformaPorc: parseFloat(document.getElementById('porcPlataformaPago').value) || 0,
+            insumosActivo: document.getElementById('checkInsumos').checked,
+            insumosValor: parseFloat(document.getElementById('valorInsumos').value) || 0,
+            insumosTipo: document.getElementById('tipoInsumos').value,
+            publicidadActivo: document.getElementById('checkPublicidad').checked,
+            publicidadValor: parseFloat(document.getElementById('valorPublicidad').value) || 0,
+            publicidadTipo: document.getElementById('tipoPublicidad').value,
+            licenciasActivo: (tipoCurso === 'virtual') && document.getElementById('checkLicencias').checked,
+            licenciasFijo: parseFloat(document.getElementById('valorLicencias').value) || 0
+        };
+    }
+
+    function calcularGastoPlataforma(recaudacionMes, config) {
+        if (config.plataformaActivo) {
+            return recaudacionMes * (config.plataformaPorc / 100);
+        }
+        return 0;
+    }
+
+    function calcularOtrosGastosMes(estudiantesMes, recaudacionMes, config) {
+        let total = 0;
+        if (config.seguroActivo) {
+            total += config.seguroPorEstudiante * estudiantesMes;
+        }
+        if (config.insumosActivo) {
+            if (config.insumosTipo === 'fijo') {
+                total += config.insumosValor;
+            } else {
+                total += recaudacionMes * (config.insumosValor / 100);
+            }
+        }
+        if (config.publicidadActivo) {
+            if (config.publicidadTipo === 'fijo') {
+                total += config.publicidadValor;
+            } else {
+                total += recaudacionMes * (config.publicidadValor / 100);
+            }
+        }
+        if (config.licenciasActivo) {
+            total += config.licenciasFijo;
+        }
+        return total;
+    }
+
+    function calcularIndicadoresEscenario(estudiantes, cuota, numCuotas, porcDocente, config) {
+        let recaudacionTotal = estudiantes * cuota * numCuotas;
+        let gastoPlataformaTotal = 0;
+        let otrosGastosTotal = 0;
+        
+        for (let mes = 1; mes <= numCuotas; mes++) {
+            let recaudacionMes = estudiantes * cuota;
+            gastoPlataformaTotal += calcularGastoPlataforma(recaudacionMes, config);
+            otrosGastosTotal += calcularOtrosGastosMes(estudiantes, recaudacionMes, config);
+        }
+        
+        let remanente1 = recaudacionTotal - gastoPlataformaTotal - otrosGastosTotal;
+        let honorariosTotales = remanente1 * (porcDocente / 100);
+        let margenFacultad = remanente1 - honorariosTotales;
+        
+        return {
+            recaudacionTotal,
+            gastoPlataformaTotal,
+            otrosGastosTotal,
+            remanente1,
+            honorariosTotales,
+            margenFacultad
+        };
+    }
+
+    function calcularProyeccionMensual(estudiantesIniciales, tasaDesercion, cuota, numCuotas, porcDocenteTotal, config) {
+        let proyeccion = [];
+        let estudiantesActuales = estudiantesIniciales;
+        
+        for (let mes = 1; mes <= numCuotas; mes++) {
+            if (mes > 1) {
+                estudiantesActuales = Math.floor(estudiantesActuales * (1 - tasaDesercion / 100));
+                if (estudiantesActuales < 0) estudiantesActuales = 0;
+            }
+            
+            let recaudacionMes = estudiantesActuales * cuota;
+            let gastoPlataforma = calcularGastoPlataforma(recaudacionMes, config);
+            let otrosGastos = calcularOtrosGastosMes(estudiantesActuales, recaudacionMes, config);
+            let remanente1Mes = recaudacionMes - gastoPlataforma - otrosGastos;
+            
+            let honorariosMes = remanente1Mes * (porcDocenteTotal / 100);
+            let margenMes = remanente1Mes - honorariosMes;
+            
+            proyeccion.push({
+                mes,
+                estudiantes: estudiantesActuales,
+                recaudacion: recaudacionMes,
+                gastoPlataforma,
+                otrosGastos,
+                remanente1: remanente1Mes,
+                honorarios: honorariosMes,
+                margen: margenMes
+            });
+        }
+        
+        return proyeccion;
+    }
+
+    function formatearMoneda(valor) {
+        if (isNaN(valor) || valor === undefined) return '$0';
+        return new Intl.NumberFormat('es-AR', { 
+            style: 'currency', 
+            currency: 'ARS', 
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(valor);
+    }
+
+    // =====================================================
+    // FUNCIONES DE RENDERIZADO
+    // =====================================================
+
+    function renderizarEscenarios() {
+        let cuota = obtenerCuotaConInflacion();
+        let numCuotas = parseInt(document.getElementById('numCuotas').value) || 1;
+        let porcDocente = parseFloat(document.getElementById('porcDocente').value) || 0;
+        let tipoCurso = document.getElementById('tipoCurso').value;
+        let config = obtenerConfiguracionCostos(tipoCurso);
+        
+        let headerHtml = '<table><th>Concepto</th>';
+        ESCENARIOS.forEach(est => {
+            headerHtml += `<th>${est} estudiantes</th>`;
+        });
+        headerHtml += '</tr>';
+        document.getElementById('escenariosHeader').innerHTML = headerHtml;
+        
+        let conceptos = [
+            { key: 'recaudacionTotal', label: '💰 Recaudación Bruta Total' },
+            { key: 'gastoPlataformaTotal', label: '💸 Gasto: Plataforma de pago' },
+            { key: 'otrosGastosTotal', label: '📋 Otros gastos operativos' },
+            { key: 'remanente1', label: '📊 Remanente 1' },
+            { key: 'honorariosTotales', label: '👩‍🏫 Honorarios Docentes' },
+            { key: 'margenFacultad', label: '🏛️ Margen Facultad' }
+        ];
+        
+        let bodyHtml = '';
+        conceptos.forEach(concepto => {
+            bodyHtml += `<tr><td>${concepto.label}</td>`;
+            ESCENARIOS.forEach(est => {
+                let indicadores = calcularIndicadoresEscenario(est, cuota, numCuotas, porcDocente, config);
+                let valor = indicadores[concepto.key];
+                let formatted = formatearMoneda(valor);
+                let clase = (concepto.key === 'margenFacultad' && valor >= 0) ? 'class="positivo"' : (concepto.key === 'margenFacultad' && valor < 0) ? 'class="negativo"' : '';
+                bodyHtml += `<td ${clase}>${formatted}</td>`;
+            });
+            bodyHtml += '</tr>';
+        });
+        
+        document.getElementById('escenariosBody').innerHTML = bodyHtml;
+    }
+
+    function renderizarProyeccionMensual() {
+        let estudiantesIniciales = parseInt(document.getElementById('estudiantesIniciales').value) || 1;
+        let tasaDesercion = parseFloat(document.getElementById('tasaDesercion').value) || 0;
+        let cuota = obtenerCuotaConInflacion();
+        let numCuotas = parseInt(document.getElementById('numCuotas').value) || 1;
+        let porcDocenteTotal = parseFloat(document.getElementById('porcDocente').value) || 0;
+        let tipoCurso = document.getElementById('tipoCurso').value;
+        let config = obtenerConfiguracionCostos(tipoCurso);
+        
+        document.getElementById('tasaDesercionDisplayPDF').innerText = tasaDesercion;
+        
+        let proyeccion = calcularProyeccionMensual(estudiantesIniciales, tasaDesercion, cuota, numCuotas, porcDocenteTotal, config);
+        
+        let headerHtml = `
+            <tr>
+                <th>Mes</th>
+                <th>Estudiantes</th>
+                <th>Recaudación</th>
+                <th>Plataforma</th>
+                <th>Otros Gastos</th>
+                <th>Remanente</th>
+                <th>Honorarios</th>
+                <th>Margen Mensual</th>
+            </tr>
+        `;
+        document.getElementById('mensualHeader').innerHTML = headerHtml;
+        
+        let bodyHtml = '';
+        let margenAcumulado = 0;
+        let recaudacionTotal = 0;
+        let gastosTotal = 0;
+        let honorariosTotal = 0;
+        
+        proyeccion.forEach(p => {
+            margenAcumulado += p.margen;
+            recaudacionTotal += p.recaudacion;
+            gastosTotal += p.gastoPlataforma + p.otrosGastos;
+            honorariosTotal += p.honorarios;
+            
+            bodyHtml += `
+                <tr>
+                    <td>Mes ${p.mes}</td>
+                    <td>${p.estudiantes}</td>
+                    <td>${formatearMoneda(p.recaudacion)}</td>
+                    <td>${formatearMoneda(p.gastoPlataforma)}</td>
+                    <td>${formatearMoneda(p.otrosGastos)}</td>
+                    <td>${formatearMoneda(p.remanente1)}</td>
+                    <td>${formatearMoneda(p.honorarios)}</td>
+                    <td class="${p.margen >= 0 ? 'positivo' : 'negativo'}">${formatearMoneda(p.margen)}</td>
+                </tr>
+            `;
+        });
+        
+        bodyHtml += `
+            <tr style="background-color:#e8f5e9; font-weight:bold; border-top:2px solid #5160ab;">
+                <td><strong>TOTALES</strong></td>
+                <td>-</td>
+                <td>${formatearMoneda(recaudacionTotal)}</td>
+                <td>${formatearMoneda(gastosTotal)}</td>
+                <td>-</td>
+                <td>-</td>
+                <td>${formatearMoneda(honorariosTotal)}</td>
+                <td class="${margenAcumulado >= 0 ? 'positivo' : 'negativo'}">${formatearMoneda(margenAcumulado)}</td>
+            </tr>
+        `;
+        
+        document.getElementById('mensualBody').innerHTML = bodyHtml;
+        
+        document.getElementById('totalCursoValorPDF').innerHTML = formatearMoneda(margenAcumulado);
+        document.getElementById('totalCursoDetallePDF').innerHTML = `Recaudación: ${formatearMoneda(recaudacionTotal)} | Gastos: ${formatearMoneda(gastosTotal)} | Honorarios: ${formatearMoneda(honorariosTotal)}`;
+        
+        let totalBox = document.getElementById('totalCursoBoxPDF');
+        if (margenAcumulado >= 0) {
+            totalBox.style.backgroundColor = "#e8f5e9";
+            totalBox.style.borderColor = "#28a745";
+        } else {
+            totalBox.style.backgroundColor = "#ffebee";
+            totalBox.style.borderColor = "#dc3545";
+        }
+    }
+
+    // =====================================================
+    // EXPORTAR A PDF
+    // =====================================================
+    function exportarPDF() {
+        const element = document.getElementById('pdf-content');
+        const fecha = new Date().toLocaleDateString('es-AR');
+        document.getElementById('fechaActual').innerText = fecha;
+        
+        const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: `informe_viabilidad_${fecha.replace(/\//g, '-')}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true, useCORS: true, logging: false },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const btn = document.getElementById('btnExportarPDF');
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '⏳ Generando PDF...';
+        btn.disabled = true;
+        
+        setTimeout(() => {
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }).catch(() => {
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+                alert('Error al generar el PDF. Intente nuevamente.');
+            });
+        }, 100);
+    }
+
+    // =====================================================
+    // MANEJADORES DE EVENTOS
+    // =====================================================
+
+    function bindCostoCheckboxes() {
+        const checks = [
+            { check: 'checkSeguro', inputs: ['valorSeguro'] },
+            { check: 'checkPlataformaPago', inputs: ['porcPlataformaPago'] },
+            { check: 'checkInsumos', inputs: ['valorInsumos', 'tipoInsumos'] },
+            { check: 'checkPublicidad', inputs: ['valorPublicidad', 'tipoPublicidad'] },
+            { check: 'checkLicencias', inputs: ['valorLicencias'] }
+        ];
+        
+        checks.forEach(item => {
+            const check = document.getElementById(item.check);
+            if (!check) return;
+            check.addEventListener('change', function() {
+                item.inputs.forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input) input.disabled = !this.checked;
+                });
+                actualizarTodo();
+            });
+        });
+    }
+
+    function bindInflacionCuota() {
+        const check = document.getElementById('checkInflacionCuota');
+        const input = document.getElementById('porcInflacionCuota');
+        check.addEventListener('change', () => { 
+            input.disabled = !check.checked; 
+            actualizarTodo(); 
+        });
+        input.addEventListener('input', () => actualizarTodo());
+    }
+
+    function toggleLicencias() {
+        const tipoCurso = document.getElementById('tipoCurso').value;
+        const container = document.getElementById('licenciasContainer');
+        const check = document.getElementById('checkLicencias');
+        if (tipoCurso === 'virtual') {
+            container.style.display = 'flex';
+            document.getElementById('valorLicencias').disabled = !check.checked;
+        } else {
+            container.style.display = 'none';
+            check.checked = false;
+            document.getElementById('valorLicencias').disabled = true;
+        }
+        actualizarTodo();
+    }
+
+    function bindInputs() {
+        const inputs = ['estudiantesIniciales', 'tasaDesercion', 'cuotaBase', 'numCuotas', 'cantidadDocentes', 'porcDocente', 'tipoCurso',
+                        'valorSeguro', 'porcPlataformaPago', 'valorInsumos', 'tipoInsumos', 'valorPublicidad', 'tipoPublicidad', 'valorLicencias'];
+        
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => actualizarTodo());
+                el.addEventListener('change', () => actualizarTodo());
+            }
+        });
+        
+        document.getElementById('tipoCurso').addEventListener('change', () => { 
+            toggleLicencias(); 
+            actualizarTodo(); 
+        });
+        
+        document.getElementById('cantidadDocentes').addEventListener('change', function() { 
+            if (this.value < 1) this.value = 1; 
+            actualizarTodo(); 
+        });
+        
+        document.getElementById('estudiantesIniciales').addEventListener('change', function() { 
+            if (this.value < 1) this.value = 1; 
+            actualizarTodo(); 
+        });
+    }
+
+    function actualizarTodo() {
+        renderizarEscenarios();
+        renderizarProyeccionMensual();
+    }
+
+    function init() {
+        bindCostoCheckboxes();
+        bindInflacionCuota();
+        bindInputs();
+        toggleLicencias();
+        actualizarTodo();
+        
+        document.getElementById('btnExportarPDF').addEventListener('click', exportarPDF);
+    }
+
+    init();
+</script>
+</body>
+</html>
