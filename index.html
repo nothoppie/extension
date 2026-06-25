@@ -16,7 +16,7 @@
 
         body {
             background-color: #f5f5f5;
-            padding: 20px;
+            padding: 10px;
             position: relative;
             min-height: 100vh;
         }
@@ -36,19 +36,20 @@
         }
 
         .inputs-panel {
-            flex: 0.35;
-            min-width: 320px;
-            padding: 24px;
+            flex: 1 1 100%;
+            min-width: 280px;
+            padding: 16px;
             background: #fafafa;
-            border-right: 1px solid #e0e0e0;
-            max-height: 90vh;
-            overflow-y: auto;
+            border-right: none;
+            border-bottom: 1px solid #e0e0e0;
+            max-height: none;
+            overflow-y: visible;
         }
 
         .results-panel {
-            flex: 0.65;
-            min-width: 600px;
-            padding: 24px;
+            flex: 1 1 100%;
+            min-width: 280px;
+            padding: 16px;
             background: white;
             overflow-x: auto;
         }
@@ -57,33 +58,33 @@
         .header {
             background: #5160ab;
             color: white;
-            padding: 24px;
+            padding: 16px 20px;
             text-align: center;
             position: relative;
         }
 
         .header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
+            font-size: 1.3rem;
+            margin-bottom: 4px;
         }
 
         .header p {
             opacity: 0.9;
-            font-size: 0.95rem;
+            font-size: 0.8rem;
         }
 
         /* BOTÓN DE AYUDA "?" - ESQUINA SUPERIOR IZQUIERDA */
         .btn-help {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 12px;
+            left: 12px;
             background: rgba(255,255,255,0.2);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 22px;
+            width: 34px;
+            height: 34px;
+            font-size: 18px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -91,6 +92,7 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
+            z-index: 10;
         }
 
         .btn-help:hover {
@@ -103,16 +105,18 @@
             background-color: #dc3545;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px 16px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            width: 100%;
+            justify-content: center;
         }
 
         .btn-pdf:hover {
@@ -127,42 +131,44 @@
         /* Contenedor para exportar a PDF */
         #pdf-content {
             background: white;
-            padding: 20px;
+            padding: 10px;
         }
 
         .section {
-            margin-bottom: 28px;
+            margin-bottom: 20px;
             border-bottom: 1px solid #e0e0e0;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
         }
 
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #5160ab;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .input-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .input-group label {
-            width: 200px;
+            width: 100%;
             font-weight: 500;
             color: #333;
+            font-size: 14px;
         }
 
         .input-group input, .input-group select {
             flex: 1;
-            min-width: 150px;
+            min-width: 120px;
+            width: 100%;
             padding: 8px 12px;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -180,16 +186,16 @@
             background: white;
             border: 1px solid #e0e0e0;
             border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 16px;
         }
 
         .costo-item {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 10px;
-            padding: 10px 0;
+            gap: 8px;
+            padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -198,55 +204,68 @@
         }
 
         .costo-check {
-            width: 30px;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
         }
 
         .costo-nombre {
-            width: 140px;
+            width: 100%;
             font-weight: 500;
+            font-size: 13px;
         }
 
         .costo-valor {
-            width: 120px;
+            flex: 1;
+            min-width: 80px;
             padding: 6px 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
+            font-size: 13px;
         }
 
         .costo-tipo {
-            width: 100px;
+            flex: 1;
+            min-width: 80px;
             padding: 6px 10px;
             border: 1px solid #ccc;
             border-radius: 6px;
+            font-size: 13px;
         }
 
         .costo-info {
-            font-size: 11px;
+            font-size: 10px;
             color: #666;
-            margin-left: 5px;
+            margin-left: 0;
+            width: 100%;
         }
 
         .tabla-escenarios, .tabla-mensual {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 16px;
-            font-size: 0.85rem;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .tabla-escenarios th, .tabla-mensual th {
             background-color: #5160ab;
             color: white;
-            padding: 10px 6px;
+            padding: 6px 4px;
             text-align: center;
             font-weight: 600;
+            font-size: 0.65rem;
             position: sticky;
             top: 0;
         }
 
         .tabla-escenarios td, .tabla-mensual td {
-            padding: 8px 6px;
+            padding: 6px 4px;
             text-align: right;
             border-bottom: 1px solid #e0e0e0;
+            font-size: 0.65rem;
         }
 
         .tabla-escenarios td:first-child, .tabla-mensual td:first-child {
@@ -255,6 +274,7 @@
             background-color: #f8f9fa;
             position: sticky;
             left: 0;
+            min-width: 80px;
         }
 
         .tabla-escenarios tr:nth-child(even), .tabla-mensual tr:nth-child(even) {
@@ -275,70 +295,80 @@
             background-color: #e8f5e9;
             border: 2px solid #28a745;
             border-radius: 12px;
-            padding: 16px;
-            margin-top: 20px;
+            padding: 12px;
+            margin-top: 16px;
             text-align: center;
         }
 
         .total-curso .label {
-            font-size: 1rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: #155724;
         }
 
         .total-curso .value {
-            font-size: 1.8rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: #155724;
         }
 
+        .total-curso .detalle {
+            font-size: 0.7rem;
+            margin-top: 6px;
+            color: #155724;
+        }
+
         .leyenda {
-            margin-top: 20px;
-            padding: 12px;
+            margin-top: 16px;
+            padding: 10px;
             background: #e7f3ff;
             border-radius: 8px;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: #004085;
         }
 
         .subseccion {
-            margin-top: 30px;
+            margin-top: 20px;
             border-top: 2px solid #e0e0e0;
-            padding-top: 20px;
+            padding-top: 16px;
         }
 
         .header-pdf {
             text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
             border-bottom: 2px solid #5160ab;
         }
 
         .header-pdf h2 {
             color: #5160ab;
-            margin-bottom: 5px;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
         }
 
         .header-pdf p {
             color: #666;
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .developer-credit {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 11px;
+            bottom: 8px;
+            right: 8px;
+            font-size: 8px;
             color: #888;
             background: rgba(255,255,255,0.95);
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 4px 8px;
+            border-radius: 16px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 1001;
             font-weight: 500;
             transition: all 0.3s ease;
             cursor: default;
             backdrop-filter: blur(5px);
+            max-width: 70%;
+            text-align: right;
+            line-height: 1.2;
         }
 
         .developer-credit:hover {
@@ -347,32 +377,214 @@
             transform: scale(1.05);
         }
 
-        @media (max-width: 768px) {
-            .dashboard {
-                flex-direction: column;
+        /* ============================================ */
+        /* RESPONSIVE PARA TABLETS Y MÓVILES */
+        /* ============================================ */
+
+        /* Tablets y pantallas medianas */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
             }
+
             .inputs-panel {
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-                max-height: none;
+                flex: 0.35;
+                min-width: 320px;
+                border-right: 1px solid #e0e0e0;
+                border-bottom: none;
+                max-height: 90vh;
+                overflow-y: auto;
             }
+
             .results-panel {
-                overflow-x: auto;
+                flex: 0.65;
+                min-width: 500px;
+                padding: 24px;
             }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.95rem;
+            }
+
+            .btn-help {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+                top: 20px;
+                left: 20px;
+            }
+
+            .btn-pdf {
+                width: auto;
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .input-group label {
+                width: 200px;
+                font-size: 14px;
+            }
+
+            .input-group input, .input-group select {
+                width: auto;
+                min-width: 150px;
+            }
+
+            .costo-nombre {
+                width: 140px;
+            }
+
+            .costo-info {
+                width: auto;
+                margin-left: 5px;
+            }
+
             .tabla-escenarios, .tabla-mensual {
+                font-size: 0.85rem;
+                display: table;
+                white-space: normal;
+            }
+
+            .tabla-escenarios th, .tabla-mensual th {
+                font-size: 0.85rem;
+                padding: 10px 6px;
+            }
+
+            .tabla-escenarios td, .tabla-mensual td {
+                font-size: 0.85rem;
+                padding: 8px 6px;
+            }
+
+            .tabla-escenarios td:first-child, .tabla-mensual td:first-child {
+                min-width: auto;
+            }
+
+            .developer-credit {
+                font-size: 11px;
+                padding: 6px 12px;
+                bottom: 20px;
+                right: 20px;
+                max-width: none;
+            }
+
+            .total-curso .value {
+                font-size: 1.8rem;
+            }
+
+            .total-curso .detalle {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Móviles pequeños */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.1rem;
+            }
+
+            .header p {
                 font-size: 0.7rem;
             }
-            .developer-credit {
-                font-size: 9px;
+
+            .btn-help {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+                top: 10px;
+                left: 10px;
+            }
+
+            .section-title {
+                font-size: 0.95rem;
+            }
+
+            .input-group label {
+                font-size: 12px;
+            }
+
+            .input-group input, .input-group select {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .costo-nombre {
+                font-size: 12px;
+            }
+
+            .costo-valor, .costo-tipo {
+                font-size: 12px;
                 padding: 4px 8px;
             }
-            .btn-help {
-                width: 32px;
-                height: 32px;
-                font-size: 18px;
-                top: 15px;
-                left: 15px;
+
+            .tabla-escenarios, .tabla-mensual {
+                font-size: 0.6rem;
             }
+
+            .tabla-escenarios th, .tabla-mensual th {
+                font-size: 0.55rem;
+                padding: 4px 2px;
+            }
+
+            .tabla-escenarios td, .tabla-mensual td {
+                font-size: 0.55rem;
+                padding: 4px 2px;
+            }
+
+            .tabla-escenarios td:first-child, .tabla-mensual td:first-child {
+                min-width: 60px;
+                font-size: 0.55rem;
+            }
+
+            .total-curso .label {
+                font-size: 0.7rem;
+            }
+
+            .total-curso .value {
+                font-size: 1rem;
+            }
+
+            .total-curso .detalle {
+                font-size: 0.6rem;
+            }
+
+            .leyenda {
+                font-size: 0.65rem;
+                padding: 8px;
+            }
+
+            .btn-pdf {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .developer-credit {
+                font-size: 7px;
+                padding: 3px 6px;
+                bottom: 4px;
+                right: 4px;
+            }
+        }
+
+        /* Scroll suave en tablas móviles */
+        .tabla-escenarios::-webkit-scrollbar,
+        .tabla-mensual::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .tabla-escenarios::-webkit-scrollbar-track,
+        .tabla-mensual::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .tabla-escenarios::-webkit-scrollbar-thumb,
+        .tabla-mensual::-webkit-scrollbar-thumb {
+            background: #5160ab;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -425,10 +637,12 @@
                 </div>
                 <div class="input-group" style="background:#f0f7ff; padding:10px; border-radius:8px; margin-top:10px;">
                     <label>📈 Margen de Inflación:</label>
-                    <input type="checkbox" id="checkInflacionCuota" style="width:20px;">
-                    <span style="font-weight:500;">Aplicar % a la cuota</span>
-                    <input type="number" id="porcInflacionCuota" value="10" step="1" min="0" class="costo-valor" disabled>
-                    <span class="costo-info">(% extra sobre el valor de cada cuota)</span>
+                    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; width:100%;">
+                        <input type="checkbox" id="checkInflacionCuota" style="width:20px;">
+                        <span style="font-weight:500; font-size:13px;">Aplicar % a la cuota</span>
+                        <input type="number" id="porcInflacionCuota" value="10" step="1" min="0" class="costo-valor" disabled>
+                        <span class="costo-info">(% extra sobre el valor de cada cuota)</span>
+                    </div>
                 </div>
             </div>
 
@@ -512,7 +726,7 @@
                     <div class="total-curso" id="totalCursoBoxPDF">
                         <div class="label">💰 TOTAL CURSO COMPLETO (considerando deserción)</div>
                         <div class="value" id="totalCursoValorPDF">-</div>
-                        <div style="font-size:0.9rem; margin-top:8px;" id="totalCursoDetallePDF">Margen Facultad acumulado</div>
+                        <div class="detalle" id="totalCursoDetallePDF">Margen Facultad acumulado</div>
                     </div>
                 </div>
             </div>
@@ -522,7 +736,7 @@
 
 <!-- Crédito "desarrollado por" -->
 <div class="developer-credit">
-    ✨‍Desarrollado por Téc. Nadia Schimpf | Sec. de Extensión Universitaria y Cultura UTN Paraná | 2026
+    ✨ Desarrollado por Téc. Nadia Schimpf | Sec. de Extensión Universitaria y Cultura UTN Paraná | 2026
 </div>
 
 <script>
@@ -689,19 +903,19 @@
         let tipoCurso = document.getElementById('tipoCurso').value;
         let config = obtenerConfiguracionCostos(tipoCurso);
         
-        let headerHtml = '<table><th>Concepto</th>';
+        let headerHtml = '<tr><th>Concepto</th>';
         ESCENARIOS.forEach(est => {
-            headerHtml += `<th>${est} estudiantes</th>`;
+            headerHtml += `<th>${est}</th>`;
         });
         headerHtml += '</tr>';
         document.getElementById('escenariosHeader').innerHTML = headerHtml;
         
         let conceptos = [
-            { key: 'recaudacionTotal', label: '💰 Recaudación Bruta Total' },
-            { key: 'gastoPlataformaTotal', label: '💸 Gasto: Plataforma de pago' },
-            { key: 'otrosGastosTotal', label: '📋 Otros gastos operativos' },
+            { key: 'recaudacionTotal', label: '💰 Recaudación Bruta' },
+            { key: 'gastoPlataformaTotal', label: '💸 Plataforma' },
+            { key: 'otrosGastosTotal', label: '📋 Otros gastos' },
             { key: 'remanente1', label: '📊 Remanente 1' },
-            { key: 'honorariosTotales', label: '👩‍🏫 Honorarios Docentes' },
+            { key: 'honorariosTotales', label: '👩‍🏫 Honorarios' },
             { key: 'margenFacultad', label: '🏛️ Margen Facultad' }
         ];
         
@@ -737,13 +951,13 @@
         let headerHtml = `
             <tr>
                 <th>Mes</th>
-                <th>Estudiantes</th>
-                <th>Recaudación</th>
-                <th>Plataforma</th>
-                <th>Otros Gastos</th>
-                <th>Remanente</th>
-                <th>Honorarios</th>
-                <th>Margen Mensual</th>
+                <th>Est.</th>
+                <th>Recaud.</th>
+                <th>Plataf.</th>
+                <th>Otros</th>
+                <th>Reman.</th>
+                <th>Honor.</th>
+                <th>Margen</th>
             </tr>
         `;
         document.getElementById('mensualHeader').innerHTML = headerHtml;
@@ -762,7 +976,7 @@
             
             bodyHtml += `
                 <tr>
-                    <td>Mes ${p.mes}</td>
+                    <td>${p.mes}</td>
                     <td>${p.estudiantes}</td>
                     <td>${formatearMoneda(p.recaudacion)}</td>
                     <td>${formatearMoneda(p.gastoPlataforma)}</td>
@@ -776,7 +990,7 @@
         
         bodyHtml += `
             <tr style="background-color:#e8f5e9; font-weight:bold; border-top:2px solid #5160ab;">
-                <td><strong>TOTALES</strong></td>
+                <td><strong>TOTAL</strong></td>
                 <td>-</td>
                 <td>${formatearMoneda(recaudacionTotal)}</td>
                 <td>${formatearMoneda(gastosTotal)}</td>
